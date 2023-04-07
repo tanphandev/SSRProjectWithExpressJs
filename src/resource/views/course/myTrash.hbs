@@ -1,0 +1,116 @@
+<div class='mt-4 container'>
+    <div class='fs-4 fw-bold'>My Trash</div>
+    <a class='mb-4' href='/me/course/stored'>Your course</a>
+    <table class='table'>
+        <thead>
+            <tr>
+                <th scope='col'>STT</th>
+                <th scope='col'>Name</th>
+                <th scope='col'>Level</th>
+                <th scope='col'>Deleted Date</th>
+                <th scope='col'>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each courses}}
+                <tr>
+                    <th scope='row'>{{math @index '+' 1}}</th>
+                    <td>{{this.name}}</td>
+                    <td>{{this.level}}</td>
+                    <td>{{this.deletedAt}}</td>
+                    <td>
+                        <button class='restore-btn'
+                        data-courseid={{this._id}}>
+                           Restore
+                        </button>
+                        <br />
+                        <button
+                            class='hard-delete-btn'
+                            type='button'
+                            data-bs-toggle='modal'
+                            data-bs-target='#hard-delete-btn'
+                            data-courseid={{this._id}}
+                        >Hard Delete</button>
+                    </td>
+                </tr>
+            {{else}}
+                <td class='text-center' colspan='5'>
+                    Your trash empty. Go to your course
+                    <a href='/me/course/stored'>here</a>
+                </td>
+            {{/each}}
+        </tbody>
+    </table>
+</div>
+
+{{! confirmation: delete course }}
+<div
+    class='modal fade'
+    id='hard-delete-btn'
+    tabindex='-1'
+    aria-labelledby='title-modal'
+    aria-hidden='true'
+>
+    <div class='modal-dialog'>
+        <div class='modal-content'>
+            <div class='modal-header'>
+                <h1
+                    class='modal-title fs-5 fw-bold'
+                    id='title-modal'
+                >Confirmation</h1>
+                <button
+                    type='button'
+                    class='btn-close'
+                    data-bs-dismiss='modal'
+                    aria-label='Close'
+                ></button>
+            </div>
+            <div class='modal-body'>
+                Are you sure you want to delete this course permanently?
+            </div>
+            <div class='modal-footer'>
+                <button
+                    type='button'
+                    class='btn btn-secondary'
+                    data-bs-dismiss='modal'
+                >Close</button>
+                <button type='submit' class='delete-confirm-btn btn btn-Danger'>Hard Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{! restore form }}
+<form name="store-form" method='POST'>
+</form>
+
+{{! delete form }}
+<form name="hard-delete-form" method='POST'>
+</form>
+{{! js-file }}
+<script>
+    const storeForm = document.querySelector ('[name="store-form"]');
+    const hardDeleteForm = document.querySelector('[name = "hard-delete-form"]');
+    const storeBtns = document.querySelectorAll('.restore-btn');
+    const hardDeleteBtns = document.querySelectorAll('.hard-delete-btn');
+    const deleteConfirBtn = document.querySelector('.delete-confirm-btn')
+    storeBtns.forEach((storeBtn) => {
+        storeBtn.addEventListener('click', () => {
+            storeForm.action = '/course/' + storeBtn.dataset.courseid + "/restore?_method=PATCH"
+            storeForm.submit()
+        })
+    })
+
+    hardDeleteBtns.forEach((hardDeleteBtn) => {
+        hardDeleteBtn.addEventListener('click', () => {
+            hardDeleteForm.action = '/course/' + hardDeleteBtn.dataset.courseid + "/force?_method=DELETE"
+        })
+    })
+
+    deleteConfirBtn.addEventListener('click', () => {
+        hardDeleteForm.submit()
+    })
+
+
+
+</script>

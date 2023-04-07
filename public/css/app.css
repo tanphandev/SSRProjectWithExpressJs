@@ -1,0 +1,24 @@
+.update-link {
+  color: #2e68b0; }
+  .update-link:hover {
+    color: red; }
+
+.restore-btn,
+.update-btn,
+.hard-delete-btn,
+.delete-btn {
+  border: none;
+  color: #2e68b0;
+  background-color: #fff;
+  text-decoration: underline; }
+  .restore-btn:hover,
+  .update-btn:hover,
+  .hard-delete-btn:hover,
+  .delete-btn:hover {
+    color: red; }
+
+a {
+  text-decoration: none; }
+
+.form-select {
+  width: 180px; }

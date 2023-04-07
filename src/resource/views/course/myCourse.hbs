@@ -1,0 +1,181 @@
+<form class='mt-4 container' method="POST" action="/course/handle-form-submit">
+    <div class='fs-4 fw-bold'>My Course</div>
+    <a class='mb-4' href='/me/course/trash'>Your trash ({{countDeleted}})</a>
+    <div class='d-flex align-items-center mt-4'>
+        <div class='form-check me-3'>
+            <input
+                class='form-check-input'
+                type='checkbox'
+                value=''
+                id='check-all'
+            />
+            <label class='form-check-label' for='check-all'>
+                Sellect all
+            </label>
+        </div>
+
+        <select name = 'action' class='form-select me-3' required>
+            <option value=''>--Choose action--</option>
+            <option value='delete'>Delete</option>
+        </select>
+
+        <button type='submit' class='btn btn-primary execute-btn disabled' >Execute</button>
+
+    </div>
+    <table class='table'>
+        <thead>
+            <tr>
+                <th></th>
+                <th scope='col'>STT</th>
+                <th scope='col'>Name
+                   {{{sortable 'name' _sort}}}
+                </th>
+                <th scope='col'>Level
+                    {{{sortable 'level' _sort}}}
+                </th>
+                <th scope='col'>Date
+                    {{{sortable 'createdAt' _sort}}}
+                </th>
+                <th scope='col'>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each courses}}
+                <tr>
+                    <td>
+                        <input
+                            id='{{math @index '+' 1}}'
+                            class='form-check-input check-item'
+                            type='checkbox'
+                            name = "courseIds[]"
+                            value='{{this._id}}'
+                        />
+                    </td>
+                    <th scope='row'><label for='{{math @index '+' 1}}'>
+                        {{math @index '+' 1}}
+                    </label></th>
+                    <td>{{this.name}}</td>
+                    <td>{{this.level}}</td>
+                    <td>{{this.createdAt}}</td>
+                    <td>
+                        <button class='update-btn'>
+                            <a
+                                class='update-link'
+                                href='/course/{{this._id}}/update'
+                            >Update</a>
+                        </button>
+                        <br />
+                        <button
+                            class='delete-btn'
+                            type='button'
+                            data-bs-toggle='modal'
+                            data-bs-target='#delete-btn'
+                            data-courseid={{this._id}}
+                        >Delete</button>
+                    </td>
+                </tr>
+            {{else}}
+                <td class='text-center' colspan='5'>
+                    There are no course available. Add course
+                    <a href='/course/create'>here</a>
+                </td>
+            {{/each}}
+        </tbody>
+    </table>
+</form>
+
+{{! confirmation: delete course }}
+<form class='delete-form' method='POST'>
+    <div
+        class='modal fade'
+        id='delete-btn'
+        tabindex='-1'
+        aria-labelledby='title-modal'
+        aria-hidden='true'
+    >
+        <div class='modal-dialog'>
+            <div class='modal-content'>
+                <div class='modal-header'>
+                    <h1
+                        class='modal-title fs-5 fw-bold'
+                        id='title-modal'
+                    >Confirmation</h1>
+                    <button
+                        type='button'
+                        class='btn-close'
+                        data-bs-dismiss='modal'
+                        aria-label='Close'
+                    ></button>
+                </div>
+                <div class='modal-body'>
+                    Are you sure to delete this course?
+                </div>
+                <div class='modal-footer'>
+                    <button
+                        type='button'
+                        class='btn btn-secondary'
+                        data-bs-dismiss='modal'
+                    >Close</button>
+                    <button type='submit' class='btn btn-Danger'>Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+{{! js-file }}
+<script>
+    const deleteBtns = document.querySelectorAll('.delete-btn') 
+    const deleteForm = document.querySelector('.delete-form')
+    const checkAll = document.querySelector('#check-all')
+    const checkItems = document.querySelectorAll("input[name='courseIds[]']")
+    const executeBtn = document.querySelector('.execute-btn')
+
+    let isCheckedAll = false;
+    checkAll.addEventListener('click', () => {
+        isCheckedAll = checkAll.checked
+            checkItems.forEach(checkItem => {
+                checkItem.checked = isCheckedAll
+            })
+        
+        if(isCheckedAll)  {
+            executeBtn.classList.remove('disabled')
+        }else
+        {
+            executeBtn.classList.add('disabled')
+        }
+    })
+
+    checkItems.forEach(checkItem => {
+        checkItem.addEventListener('click',() => {
+        let checkItemCount = checkItems.length
+        let checkItemIsCheckedCount = document.querySelectorAll("input[name='courseIds[]']:checked").length
+        
+        //if checkItemIsCheckedCount >= 1 => enable button Execute
+        if(checkItemIsCheckedCount >= 1)
+        {
+            executeBtn.classList.remove('disabled')
+        }else
+        {
+            executeBtn.classList.add('disabled')
+        }
+
+        //if all item is checked, checkall also is checked
+        if(checkItemCount == checkItemIsCheckedCount )
+        {
+            checkAll.checked = true
+        }
+        else
+        {
+             checkAll.checked = false
+        }
+    })})
+
+    deleteBtns.forEach((deleteBtn,index) => {
+    deleteBtn.addEventListener('click', () => { 
+        const courseId = deleteBtn.dataset.courseid 
+        deleteForm.action = '/course/' + courseId + '?_method=DELETE'
+        })})
+
+
+</script>

@@ -1,0 +1,46 @@
+<div class='mt-4 mx-5'>
+    <div class='my-4 fs-2'>Update Course</div>
+    <form method='POST' action='/course/{{course._id}}?_method=PUT'>
+        <div class='mb-3'>
+            <label for='name' class='form-label'>Name</label>
+            <input
+                value='{{course.name}}'
+                name='name'
+                type='text'
+                class='form-control'
+                id='name'
+            />
+        </div>
+        <div class='mb-3'>
+            <label for='description' class='form-label'>Description</label>
+            <input
+                value='{{course.description}}'
+                name='description'
+                type='text'
+                class='form-control'
+                id='description'
+            />
+        </div>
+        <div class='mb-3'>
+            <label for='videoId' class='form-label'>Video ID</label>
+            <input
+                value='{{course.videoId}}'
+                name='videoId'
+                type='text'
+                class='form-control'
+                id='videoId'
+            />
+        </div>
+        <div class='mb-3'>
+            <label for='Level' class='form-label'>Level</label>
+            <input
+                value='{{course.level}}'
+                name='level'
+                type='text'
+                class='form-control'
+                id='Level'
+            />
+        </div>
+        <button type='submit' class='btn btn-primary'>Update Course</button>
+    </form>
+</div>
